@@ -1,2 +1,4 @@
 archive/
 a.out
+*.swp
+*~

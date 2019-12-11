@@ -2,7 +2,6 @@
 #include <OpenGL/gl3.h>
 #include <OpenGL/gl3ext.h>
 
-//#include "glad/glad.h"
 #include "GLFW/glfw3.h"
 
 #include <iostream>
@@ -23,15 +22,23 @@ unsigned int indices[] = {
 	2, 3, 0
 };
 
+////////////////////////////////////////////////////////////////////////////////
+//                                                                            //
+//                          Function Declarations                             //
+//                                                                            //
+////////////////////////////////////////////////////////////////////////////////
+
 void framebuffer_size_callback(GLFWwindow* window, int width, int height);
 
 void handle_input(GLFWwindow* window);
 
-//GLuint load_shader(std::string shader_filename, GLenum shader_type);
+int main();
 
-//GLuint make_shader_program(GLuint vertex_shader, GLuint fragment_shader);
-
-
+////////////////////////////////////////////////////////////////////////////////
+//                                                                            //
+//                          Function Definitions                              //
+//                                                                            //
+////////////////////////////////////////////////////////////////////////////////
 
 void framebuffer_size_callback(GLFWwindow* window, int width, int height) {
     glViewport(0, 0, width, height);
@@ -41,52 +48,6 @@ void handle_input(GLFWwindow *window) {
 	if(glfwGetKey(window, GLFW_KEY_ESCAPE) == GLFW_PRESS)
         glfwSetWindowShouldClose(window, true);
 }
-/*
-GLuint load_shader(std::string shader_filename, GLenum shader_type) {
-	std::ifstream in(shader_filename);
-	std::string shader_text(
-		(std::istreambuf_iterator<char>(in)),
-		std::istreambuf_iterator<char>()
-	);
-	const char* shader_chars = shader_text.c_str();
-	std::cout << "Shader File \"" + shader_filename + "\" Loaded. \n Contents: \n" + shader_chars << std::endl;
-
-	GLuint shader = glCreateShader(shader_type);
-	glShaderSource(shader, 1, &shader_chars, NULL);
-	glCompileShader(shader);
-
-	GLint status;
-	glGetShaderiv(shader, GL_COMPILE_STATUS, &status);
-
-	if (status != GL_TRUE) {
-		char buffer[512];
-		glGetShaderInfoLog(shader, 512, NULL, buffer);
-		std::cerr << "Shader did not compile. Error log:" << std::endl;
-		std::cerr << buffer << std::endl;
-	}
-
-	return shader;
-}
-
-GLuint make_shader_program(GLuint vertex_shader, GLuint fragment_shader) {
-	GLuint shader_program = glCreateProgram();
-	glAttachShader(shader_program, vertex_shader);
-	glAttachShader(shader_program, fragment_shader);
-	glLinkProgram(shader_program);
-
-	GLint status;
-	glGetProgramiv(shader_program, GL_LINK_STATUS, &status);
-
-	if (status != GL_TRUE) {
-		char buffer[512];
-		glGetProgramInfoLog(shader_program, 512, NULL, buffer);
-		std::cerr << "Shaders could not link. Error log:" << std::endl;
-		std::cerr << buffer << std::endl;
-	}
-
-	return shader_program;
-};*/
-
 int main() {
 	glfwInit();
 	glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
@@ -103,11 +64,7 @@ int main() {
 	}
 	glfwMakeContextCurrent(window);
 
-	// GLAD
-	/*if (!gladLoadGLLoader((GLADloadproc)glfwGetProcAddress)) {
-		std::cerr << "GLAD initialization failed. " << std::endl;
-		return -1;
-	}*/
+
 
 	// define size of viewport
 	glViewport(0, 0, 640, 480);
@@ -120,20 +77,8 @@ int main() {
 	GLuint EBO;
 	glGenBuffers(1, &EBO);
 
-	/*// Load shaders
-	GLuint vertex_shader = load_shader("shader.vert", GL_VERTEX_SHADER);
-	GLuint fragment_shader = load_shader("shader.frag", GL_FRAGMENT_SHADER);
-
-	// Make shader program
-	GLuint shader_program = make_shader_program(vertex_shader, fragment_shader);
-	//GLint uniform_color = glGetUniformLocation(shader_program, "ourColor");
-	//glUseProgram(shader_program); // AV
-
-	// Delete shaders (they're no longer needed)
-	glDeleteShader(vertex_shader);
-	glDeleteShader(fragment_shader);*/
-
-	Shader main_shader = Shader("shader.vert", "shader.frag");
+	// Load shaders
+	shader::Shader main_shader = shader::Shader("shader.vert", "shader.frag");
 
 	// Creating a VAO to store our state
 	GLuint VAO;
@@ -141,7 +86,8 @@ int main() {
 	glBindVertexArray(VAO);
 
 	// Bind VBO
-	glBindBuffer(GL_ARRAY_BUFFER, VBO); // this is the buffer we are gonna write to
+	glBindBuffer(GL_ARRAY_BUFFER, VBO);
+	// this is the buffer we are gonna write to
 	glBufferData(GL_ARRAY_BUFFER, sizeof(vertices), vertices, GL_STATIC_DRAW);
 
 	// Bind EBO (you need to bind vbo and ebo together)
@@ -154,7 +100,7 @@ int main() {
 	glEnableVertexAttribArray(0); // 6 stride (color in between)
 	// color
 	glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 6*sizeof(float),
-		(void*)(3*sizeof(float))); // 3 float offset
+	(void*)(3*sizeof(float))); // 3 float offset
 	glEnableVertexAttribArray(1);
 
 	glfwSetFramebufferSizeCallback(window, framebuffer_size_callback);
