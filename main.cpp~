@@ -114,14 +114,12 @@ int main() {
 
 	// VBO
 	GLuint VBO;
-	glGenBuffers(1, &VBO); // Generates 1 VBO and stores it's ID at (&VBO)[0]
+	glGenBuffers(1, &VBO);
 
-	// EBO -- for indexed drawing.
+	// EBO
 	GLuint EBO;
 	glGenBuffers(1, &EBO);
 
-<<<<<<< HEAD
-=======
 	/*// Load shaders
 	GLuint vertex_shader = load_shader("shader.vert", GL_VERTEX_SHADER);
 	GLuint fragment_shader = load_shader("shader.frag", GL_FRAGMENT_SHADER);
@@ -136,41 +134,28 @@ int main() {
 	glDeleteShader(fragment_shader);*/
 
 	Shader main_shader = Shader("shader.vert", "shader.frag");
->>>>>>> parent of 7d310db... made shader.hpp look nicer
-
-
-<<<<<<< HEAD
-
-		// Load shaders
-		shader::Shader main_shader = shader::Shader("shader.vert", "shader.frag");
-
-   // Bind VBO
-   glBindBuffer(GL_ARRAY_BUFFER, VBO);
-   // this is the buffer we are gonna write to
-   glBufferData(GL_ARRAY_BUFFER, sizeof(vertices), vertices, GL_STATIC_DRAW);
-=======
-	// Bind VBO
-	glBindBuffer(GL_ARRAY_BUFFER, VBO); // this is the buffer we are gonna write to
-	glBufferData(GL_ARRAY_BUFFER, sizeof(vertices), vertices, GL_STATIC_DRAW);
->>>>>>> parent of 7d310db... made shader.hpp look nicer
-
-	// Bind EBO (you need to bind vbo and ebo together)
-	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, EBO);
-	glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(indices), indices, GL_STATIC_DRAW);
 
 	// Creating a VAO to store our state
 	GLuint VAO;
 	glGenVertexArrays(1, &VAO);
 	glBindVertexArray(VAO);
+
+	// Bind VBO
+	glBindBuffer(GL_ARRAY_BUFFER, VBO); // this is the buffer we are gonna write to
+	glBufferData(GL_ARRAY_BUFFER, sizeof(vertices), vertices, GL_STATIC_DRAW);
+
+	// Bind EBO (you need to bind vbo and ebo together)
+	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, EBO);
+	glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(indices), indices, GL_STATIC_DRAW);
+
 	// Linking vertex attributes
-	// >> position
+	// position
 	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 6*sizeof(float), (void*)0);
 	glEnableVertexAttribArray(0); // 6 stride (color in between)
-	// >> color
+	// color
 	glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 6*sizeof(float),
 		(void*)(3*sizeof(float))); // 3 float offset
 	glEnableVertexAttribArray(1);
-
 
 	glfwSetFramebufferSizeCallback(window, framebuffer_size_callback);
 
@@ -181,7 +166,7 @@ int main() {
 		float time_sin = std::sin(glfwGetTime());
 
 		// render
-		glClearColor(0.0f, 0.0f, 1.0f, 1.0f);
+		glClearColor(0.5f, 0.0f, 1.0f, 1.0f);
 		glClear(GL_COLOR_BUFFER_BIT);
 
 		main_shader.use();
